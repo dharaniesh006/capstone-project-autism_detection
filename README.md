@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Autism Detection System
 
 A cutting-edge, machine-learning-powered web application built with **Django**, **TensorFlow/Keras**, and an intuitive **Glassmorphic UI**. Designed to assess and predict behavioral traits indicative of Autism Spectrum Disorder (ASD). The system provides multi-modal assessment utilizing both tabular developmental forms and convolutional neural network (CNN) evaluations of facial imaging and video samples.
@@ -73,3 +74,6 @@ If you are bootstrapping the project for testing interactions or skipping manual
 ---
 
 *This application is classified strictly as an academic informational screening resource. Final formal diagnosis workflows necessitate strict evaluations curated exclusively by authorized healthcare physicians.*
+=======
+# capstone-project-autism_detection
+>>>>>>> 0c2ec7a3a55c07a1c1bb915c0f4f0be94fd5207d
