@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Videos - Autism Prediction System</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <style>
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background: rgba(192, 21, 47, 0.1);
+            color: #ff5459;
+            border: 1px solid rgba(192, 21, 47, 0.2);
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-logout:hover {
+            background: rgba(192, 21, 47, 0.15);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 1.5px solid var(--color-border);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--color-text);
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 4px rgba(0, 205, 205, 0.15);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        @media (max-width: 768px) {
+            .form-card {
+                padding: 24px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">Autism Prediction System</a>
+            <ul class="nav-menu">
+                <li><a href="/analyze1" class="nav-link active">Upload Videos</a></li>
+                <li><a href="/analyze3" class="nav-link">View Videos</a></li>
+                <li><a href="https://meet.google.com/new" target="_blank" class="nav-link">New Meeting</a></li>
+                <li>
+                    <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle Theme">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" /></svg>
+                    </button>
+                </li>
+                <li><a href="/logout" class="btn-logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="title-glow">Upload Autism Video Content</h1>
+            <p>Upload educational videos for autism awareness and support</p>
+        </div>
+
+        <div class="glass-card form-card text-center">
+            <form action="process/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group text-left" style="text-align: left;">
+                    <label for="fi1">Select Video File</label>
+                    <input type="file" id="fi1" name="fi1" accept="video/*" required>
+                </div>
+
+                <div class="form-group text-left" style="text-align: left;">
+                    <label for="descr">Video Description</label>
+                    <textarea id="descr" name="descr" placeholder="Enter a description for this video..."
+                        required></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary mt-4">Upload Video</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/theme.js' %}"></script>
+</body>
+
+</html>

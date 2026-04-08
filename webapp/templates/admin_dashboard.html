@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(0, 205, 205, 0.05);
+            border: 1px solid rgba(0, 205, 205, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 36px;
+            color: var(--color-primary);
+            margin: 0 0 8px 0;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            margin: 0;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .action-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--color-primary);
+            box-shadow: 0 8px 20px rgba(0, 205, 205, 0.15);
+            color: var(--color-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="full-container">
+        <div class="glass-card">
+            <!-- Navbar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <h1 class="title-glow" style="margin:0;">Admin Control Panel</h1>
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                        <svg viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18.75a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-1.5a.75.75 0 01.75-.75zM6.166 18.894a.75.75 0 001.06 1.06l1.59-1.591a.75.75 0 10-1.06-1.061l-1.591 1.59zM2.25 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H3a.75.75 0 01-.75-.75zM5.106 6.166a.75.75 0 001.06 1.061L7.757 5.636A.75.75 0 006.696 4.575l-1.59 1.591z"></path></svg>
+                    </button>
+                    <a href="/logout" class="btn-logout">Logout</a>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <h2 style="margin-bottom: 24px;">Platform Statistics</h2>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>142</h3>
+                    <p>Total Registered Users</p>
+                </div>
+                <div class="stat-card">
+                    <h3>38</h3>
+                    <p>Total Assessments</p>
+                </div>
+                <div class="stat-card">
+                    <h3>24</h3>
+                    <p>Uploaded Resources</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <h2 style="margin-bottom: 24px;">Quick Actions</h2>
+            <div class="action-grid">
+                <a href="/analyze1" class="action-card">
+                    Upload Videos
+                </a>
+                <a href="/analyze3" class="action-card">
+                    Manage Videos
+                </a>
+                <a href="/find" class="action-card">
+                    System Output
+                </a>
+            </div>
+            
+            <div class="text-center" style="margin-top: 40px; border-top: 1px solid var(--color-border); padding-top: 24px;">
+                <p>Welcome to the admin dashboard. From here you can manage media for assessments.</p>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/theme.js' %}"></script>
+</body>
+</html>

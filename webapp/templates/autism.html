@@ -1,0 +1,550 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autism Prediction - Assessment</title>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <style>
+        .header-section {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .question-group {
+            margin-bottom: 28px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .question-group:last-of-type {
+            border-bottom: none;
+        }
+
+        .question-label {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--color-primary);
+        }
+
+        .radio-option label {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+        }
+
+        .result-card.hidden {
+            display: none;
+        }
+
+        .result-no {
+            background: rgba(33, 128, 141, 0.1);
+            color: #21808d;
+            border: 1px solid rgba(33, 128, 141, 0.2);
+        }
+
+        .result-low {
+            background: rgba(242, 206, 95, 0.1);
+            color: #a88d3d;
+            border: 1px solid rgba(242, 206, 95, 0.3);
+        }
+
+        .result-moderate {
+            background: rgba(168, 75, 47, 0.1);
+            color: #a84b2f;
+            border: 1px solid rgba(168, 75, 47, 0.2);
+        }
+
+        .result-high {
+            background: rgba(192, 21, 47, 0.1);
+            color: #ff5459;
+            border: 1px solid rgba(192, 21, 47, 0.2);
+        }
+
+        .result-details {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--color-text);
+        }
+
+        [data-theme="dark"] .result-details {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .result-details strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 16px;
+            color: var(--color-text-secondary);
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 205, 205, 0.2);
+            border-top: 3px solid var(--color-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .btn-logout {
+            padding: 8px 16px;
+            background: rgba(192, 21, 47, 0.1);
+            color: #ff5459;
+            border: 1px solid rgba(192, 21, 47, 0.2);
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-logout:hover {
+            background: rgba(192, 21, 47, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">Autism Prediction System</a>
+            <ul class="nav-menu">
+                <li><a href="/autism" class="nav-link active">Autism Prediction</a></li>
+                <li><a href="/find" class="nav-link">Find Autism Stage</a></li>
+                <li><a href="/analyze4" class="nav-link">View Videos</a></li>
+                <li><a href="https://meet.google.com/new" target="_blank" class="nav-link">New Meeting</a></li>
+                <li>
+                    <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle Theme">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" /></svg>
+                    </button>
+                </li>
+                <li><a href="/logout" class="btn-logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="header-section">
+            <h1 class="title-glow">Autism Prediction Assessment</h1>
+            <p>Please answer the following questions about your child</p>
+        </div>
+
+        <div class="glass-card form-card">
+            <form id="autismForm">
+                <div class="question-group">
+                    <span class="question-label">Does your child look at you when you call his/her name?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q1_no" name="a1" value="0" required>
+                            <label for="q1_no">No</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q1_yes" name="a1" value="1">
+                            <label for="q1_yes">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <span class="question-label">How easy is it for you to get eye contact with your child?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q2_no" name="a2" value="0" required>
+                            <label for="q2_no">Difficult</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q2_yes" name="a2" value="1">
+                            <label for="q2_yes">Easy</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <span class="question-label">Does your child point to indicate that He/She wants something?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q3_no" name="a3" value="0" required>
+                            <label for="q3_no">No</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q3_yes" name="a3" value="1">
+                            <label for="q3_yes">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <span class="question-label">Does your child point to share an interest with you?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q4_no" name="a4" value="0" required>
+                            <label for="q4_no">No</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q4_yes" name="a4" value="1">
+                            <label for="q4_yes">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <span class="question-label">Does your child pretend? e.g. care for dolls, talk on a toy
+                        phone?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q5_no" name="a5" value="0" required>
+                            <label for="q5_no">No</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q5_yes" name="a5" value="1">
+                            <label for="q5_yes">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <span class="question-label">When you ask your child to come, do they follow your direction?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q6_no" name="a6" value="0" required>
+                            <label for="q6_no">No</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q6_yes" name="a6" value="1">
+                            <label for="q6_yes">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <span class="question-label">If you or someone else in the family is visibly upset, does your child
+                        show signs of wanting to comfort them?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q7_no" name="a7" value="0" required>
+                            <label for="q7_no">No</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q7_yes" name="a7" value="1">
+                            <label for="q7_yes">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <span class="question-label">Does your child ever express wanting to share their toys with
+                        others?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q8_no" name="a8" value="0" required>
+                            <label for="q8_no">No</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q8_yes" name="a8" value="1">
+                            <label for="q8_yes">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <span class="question-label">Does your child use simple gestures (e.g. wave goodbye)?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q9_no" name="a9" value="0" required>
+                            <label for="q9_no">No</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q9_yes" name="a9" value="1">
+                            <label for="q9_yes">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <span class="question-label">Does your child ever show wanting to be independent and do tasks on
+                        their own?</span>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="q10_no" name="a10" value="0" required>
+                            <label for="q10_no">No</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="q10_yes" name="a10" value="1">
+                            <label for="q10_yes">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="age">Enter age of your child (In Months)</label>
+                    <input type="number" id="age" name="age" placeholder="e.g., 24" min="1" max="300" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="gender">Enter Gender of your Child</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select gender</option>
+                        <option value="m">Male</option>
+                        <option value="f">Female</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="jaundice">Jaundice Affected for your Child?</label>
+                    <select id="jaundice" name="jaundice" required>
+                        <option value="">Select option</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="family_asd">Family member with ASD?</label>
+                    <select id="family_asd" name="family_asd" required>
+                        <option value="">Select option</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary mt-4" id="submitBtn">Get Prediction</button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing responses...</p>
+            </div>
+
+            <div class="result-card" id="resultCard"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('autismForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const resultCard = document.getElementById('resultCard');
+
+            // Disable submit button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            loading.classList.add('show');
+            resultCard.classList.remove('show');
+
+            // Simulate processing delay for better UX
+            setTimeout(() => {
+                try {
+                    // Calculate autism risk score
+                    const result = calculateAutismRisk(formData);
+
+                    // Hide loading
+                    loading.classList.remove('show');
+
+                    // Display result
+                    displayResult(result);
+
+                    // Scroll to result
+                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    loading.classList.remove('show');
+                    resultCard.className = 'result-card show result-high';
+                    resultCard.innerHTML = '❌ An error occurred while processing your request. Please check all fields and try again.';
+                } finally {
+                    // Re-enable submit button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Get Prediction';
+                }
+            }, 1500);
+        });
+
+        function calculateAutismRisk(formData) {
+            // Get behavioral scores (10 questions, each worth 1 point if "Yes")
+            let behavioralScore = 0;
+            for (let i = 1; i <= 10; i++) {
+                const answer = parseInt(formData.get(`a${i}`));
+                behavioralScore += answer;
+            }
+
+            // Get additional factors
+            const age = parseInt(formData.get('age'));
+            const gender = formData.get('gender');
+            const jaundice = formData.get('jaundice');
+            const familyASD = formData.get('family_asd');
+
+            // Risk factor scoring
+            let riskScore = 0;
+
+            // Behavioral questions (inverted - lower score means more concern)
+            // Score of 0-3 out of 10 = High concern
+            // Score of 4-6 out of 10 = Moderate concern  
+            // Score of 7-8 out of 10 = Low concern
+            // Score of 9-10 out of 10 = Minimal concern
+            const behavioralRisk = 10 - behavioralScore;
+            riskScore += behavioralRisk;
+
+            // Age factor (higher risk in certain age ranges)
+            if (age >= 18 && age <= 36) {
+                riskScore += 2; // Peak diagnostic age
+            } else if (age >= 12 && age < 18) {
+                riskScore += 1;
+            }
+
+            // Gender factor (males have higher prevalence - approximately 4:1 ratio)
+            if (gender === 'm') {
+                riskScore += 1.5;
+            }
+
+            // Family history (strong genetic component)
+            if (familyASD === 'yes') {
+                riskScore += 3;
+            }
+
+            // Jaundice (some studies show correlation)
+            if (jaundice === 'yes') {
+                riskScore += 0.5;
+            }
+
+            // Determine risk level based on total score
+            let riskLevel, recommendation;
+
+            if (riskScore <= 5) {
+                riskLevel = 'no';
+                recommendation = 'Based on the assessment, your child shows typical developmental patterns. Continue regular developmental monitoring.';
+            } else if (riskScore <= 9) {
+                riskLevel = 'low';
+                recommendation = 'Your child shows some behaviors that may warrant attention. Consider consulting a pediatrician for a comprehensive developmental evaluation.';
+            } else if (riskScore <= 13) {
+                riskLevel = 'moderate';
+                recommendation = 'Your child shows several indicators that suggest further evaluation is recommended. Please schedule an appointment with a developmental specialist or pediatrician soon.';
+            } else {
+                riskLevel = 'high';
+                recommendation = 'Your child shows multiple indicators that warrant immediate professional evaluation. Please consult with a developmental pediatrician or autism specialist as soon as possible for a comprehensive assessment.';
+            }
+
+            return {
+                level: riskLevel,
+                score: riskScore.toFixed(1),
+                behavioralScore: behavioralScore,
+                recommendation: recommendation,
+                factors: {
+                    age: age,
+                    gender: gender === 'm' ? 'Male' : 'Female',
+                    jaundice: jaundice === 'yes',
+                    familyASD: familyASD === 'yes'
+                }
+            };
+        }
+
+        function displayResult(result) {
+            const resultCard = document.getElementById('resultCard');
+            let resultClass = '';
+            let resultText = '';
+            let icon = '';
+
+            switch (result.level) {
+                case 'no':
+                    resultClass = 'result-no';
+                    icon = '✓';
+                    resultText = 'Your child has not been affected by Autism Disease';
+                    break;
+                case 'low':
+                    resultClass = 'result-low';
+                    icon = '⚠️';
+                    resultText = 'Your child has been affected by Autism in Low Level';
+                    break;
+                case 'moderate':
+                    resultClass = 'result-moderate';
+                    icon = '🟡';
+                    resultText = 'Your child has been affected by Autism in Moderate Level';
+                    break;
+                case 'high':
+                    resultClass = 'result-high';
+                    icon = '🔴';
+                    resultText = 'Your child has been affected by Autism in High Level';
+                    break;
+            }
+
+            resultCard.className = `result-card show ${resultClass}`;
+            resultCard.innerHTML = `
+                <div style="font-size: 24px; margin-bottom: 8px;">${icon}</div>
+                <div style="font-size: 18px; margin-bottom: 16px;">${resultText}</div>
+                <div class="result-details">
+                    <strong>Assessment Details:</strong>
+                    <div style="text-align: left;">
+                        <p><strong>Behavioral Score:</strong> ${result.behavioralScore}/10 positive responses</p>
+                        <p><strong>Risk Score:</strong> ${result.score}</p>
+                        <p><strong>Age:</strong> ${result.factors.age} months</p>
+                        <p><strong>Gender:</strong> ${result.factors.gender}</p>
+                        ${result.factors.familyASD ? '<p><strong>Family History:</strong> Yes (genetic factor present)</p>' : ''}
+                        ${result.factors.jaundice ? '<p><strong>Jaundice History:</strong> Yes</p>' : ''}
+                    </div>
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.1);">
+                        <strong>Recommendation:</strong>
+                        <p style="margin-top: 8px;">${result.recommendation}</p>
+                    </div>
+                    <div style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.05); border-radius: 6px; font-size: 13px;">
+                        <strong>Disclaimer:</strong> This is a screening tool only and not a diagnostic instrument. A formal diagnosis requires comprehensive evaluation by qualified healthcare professionals.
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+    <script src="{% static 'js/theme.js' %}"></script>
+</body>
+
+</html>

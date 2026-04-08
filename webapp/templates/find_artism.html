@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Autism Stage - Autism Prediction System</title>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <style>
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 205, 205, 0.1);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px auto;
+        }
+
+        .upload-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--color-primary);
+        }
+
+        .file-input-wrapper {
+            margin-bottom: 32px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(0, 205, 205, 0.1);
+            color: var(--color-primary);
+            border: 2px dashed var(--color-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .file-input-label:hover {
+            background: rgba(0, 205, 205, 0.15);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background: rgba(192, 21, 47, 0.1);
+            color: #ff5459;
+            border: 1px solid rgba(192, 21, 47, 0.2);
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-logout:hover {
+            background: rgba(192, 21, 47, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">Autism Prediction System</a>
+            <ul class="nav-menu">
+                <li><a href="/analyze" class="nav-link">Autism Prediction</a></li>
+                <li><a href="/find" class="nav-link active">Find Autism Stage</a></li>
+                <li><a href="/analyze4" class="nav-link">View Videos</a></li>
+                <li><a href="https://meet.google.com/new" target="_blank" class="nav-link">New Meeting</a></li>
+                <li>
+                    <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle Theme">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" /></svg>
+                    </button>
+                </li>
+                <li><a href="/logout" class="btn-logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="title-glow">Find Autism Stage</h1>
+            <p>Upload an image or video to detect autism stage using AI analysis</p>
+        </div>
+
+        <div class="glass-card text-center">
+            <div class="upload-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                </svg>
+            </div>
+
+            {% if error %}
+            <div class="alert-error">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="/output" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="file-input-wrapper">
+                    <label for="fi" class="file-input-label">
+                        📁 Choose Image or Video File
+                    </label>
+                    <input type="file" id="fi" name="fi" accept="image/*,video/*" required>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn-primary" style="max-width: 300px;">Upload & Analyze</button>
+                </div>
+
+                <p class="mt-4" style="font-size: 14px;">
+                    Supported formats: JPG, PNG, MP4, AVI • Max size: 50MB
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/theme.js' %}"></script>
+    <script>
+        // Display selected filename
+        document.getElementById('fi').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                document.querySelector('.file-input-label').textContent = '✓ ' + fileName;
+            }
+        });
+    </script>
+</body>
+</html>
